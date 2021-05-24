@@ -3,6 +3,7 @@
     --button-hover-color: #343434;
     --button-clicked-color: #494949;
     --text-color: white;
+    --text-color-dim: hsl(0, 0%, 80%);
     --calculator-color: #292929;
     --calculator-font: "Segoe UI";
 
@@ -20,19 +21,32 @@ body {
 #calc-body {
     background-color: var(--calculator-color);
     width: 400px;
-    height: 550px;
+    min-height: 550px;
     display: flex;
     padding: 4px;
     box-sizing: border-box; /*Prevents padding resizing*/
     flex-direction: column;
+    justify-content: space-between;
 }
 
-/* Cap display length at 12 numbers */
-#calc-display {
-    flex-grow: 1.5;
-    font-size: 60px;
-    overflow-wrap: break-word;
+#calc-display-previous {
+    margin: 5px 5px 0 5px;
+    color: var(--text-color-dim);
+    font-size: 30px;
     display: flex;
+    text-align: right;
+    word-wrap: break-word;
+    word-break: break-all;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+#calc-display-current {
+    font-size: 60px;
+    display: flex;
+    text-align: right;
+    word-wrap: break-word;
+    word-break: break-all;
     align-items: flex-end;
     justify-content: flex-end;
 }
@@ -70,7 +84,7 @@ body {
 }
 
 #calc-panel {
-    flex-grow: 2;
+    min-height: 300px;
     display: grid;
     font-size: 25px;
     grid-template-columns: 1fr 1fr 1fr 1fr;

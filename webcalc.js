@@ -7,5 +7,3 @@ function operate(a, b, op) {
         default: return null;
     }
 }
-
-
