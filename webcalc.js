@@ -32,103 +32,83 @@ function initPageElems() {
     document.getElementById("delete-button").
     addEventListener("click", deleteOne);
 
-    resetCalc()
-}
-
-function putPoint() {
-    currentNumber = memory; // load number in memory in to modify
-    if (Number.isInteger(Number(currentNumber))){
-        currentNumber += ".";
-        curDisplayContent = currentNumber;
-        updateDisplays();
-    }
+    resetCalcValues();
+    updateCurDisplay(currentNumStr);
 }
 
 function deleteOne() {
-    currentNumber = currentNumber.toString().slice(0, -1);
-    if (currentNumber.length === 0) currentNumber = 0;
-    curDisplayContent = currentNumber;
-    updateDisplays();
+    currentNumStr = currentNumStr.slice(0, -1);
+    if (currentNumStr.length === 0) currentNumStr = "0";
+    updateCurDisplay(currentNumStr);
 }
 
 function changeSign() {
-    currentNumber *= -1;
-    curDisplayContent = currentNumber;
-    updateDisplays();
+    currentNumStr = (Number(currentNumStr) * -1).toString();
+    updateCurDisplay(currentNumStr);
 }
 
 function putDigit() {
     let digit = this.textContent;
-    if (Number(currentNumber) === 0)
-        currentNumber = digit;
+    if (currentNumStr === "0")
+        currentNumStr = digit;
     else
-        currentNumber += digit;
-    curDisplayContent = currentNumber;
+        currentNumStr += digit; // concatenate to currentNumStr string
+    updateCurDisplay(currentNumStr);
+}
 
-    updateDisplays();
+function putPoint() {
+    // Only allow one decimal point to exist!
+    if (Number.isInteger(Number(currentNumStr))){
+        currentNumStr += ".";
+        updateCurDisplay(currentNumStr);
+    }
 }
 
 function putOperator() {
-    let op = this.textContent;
-    if (currentOperator === null) {
-        memory = currentNumber;
-        currentNumber = 0;
-    }
-    // Division by zero is handled by operator changes with 0 being ignored
-    if (Number(currentNumber) !== 0) {
-        memory = operate(Number(memory), Number(currentNumber), currentOperator);
-        currentNumber = 0;
-    }
-    currentOperator = op;
-    prevDisplayContent = `${memory} ${currentOperator}`;
-    curDisplayContent = currentNumber;
-
-    updateDisplays();
+    equals();   // Calc what was previously there first, if possible
+    currentOperator = this.textContent;
 }
 
 function equals() {
-    // If no operations can be done, result equals number itself
-    if (currentOperator == null) {
-        prevDisplayContent = `${currentNumber} =`;
-    } else {
-        prevDisplayContent = `${memory} ${currentOperator} ${currentNumber} =`;
-
-        if (currentOperator === "/" && Number(currentNumber) === 0) {
-            curDisplayContent = "division by 0";
-            currentNumber = 0;
+    if (memoryStr === null) {
+        // Loading current number to memory as first term
+        memoryStr = currentNumStr;
+        currentNumStr = "0";
+        updateCurDisplay(currentNumStr);
+    } else if (currentOperator !== null) {
+        if (currentNumStr !== "0" || currentOperator !== "/") {
+            // Calculating with second term
+            memoryStr = operate(Number(memoryStr), Number(currentNumStr), currentOperator).toString();
+            currentNumStr = "0";
+            updateCurDisplay(memoryStr);
         } else {
-            memory = operate(Number(memory), Number(currentNumber), currentOperator);
-            currentNumber = memory;
-            curDisplayContent = memory;
+            updateCurDisplay("division by 0");
+            resetCalcValues();
         }
     }
+}
 
-    updateDisplays();
+// Does not apply changes to display by itself!
+function resetCalcValues() {
+    memoryStr = null;
+    currentOperator = null;
+    currentNumStr = "0";
 }
 
 function resetCalc() {
-    prevDisplayContent = "";
-    curDisplayContent = 0;
-    currentNumber = 0;
-    currentOperator = null;
-    memory = 0;
-
-    updateDisplays()
+    resetCalcValues();
+    updateCurDisplay(currentNumStr);
 }
 
-function updateDisplays() {
-    prevDisplayDiv.textContent = prevDisplayContent;
-    curDisplayDiv.textContent = curDisplayContent;
+function updateCurDisplay(content) {
+    curDisplayDiv.textContent = content;
 }
 
 const fractionDigitsValue = 6;
-const prevDisplayDiv = document.getElementById("calc-display-previous");
 const curDisplayDiv = document.getElementById("calc-display-current");
 
-let prevDisplayContent;
-let curDisplayContent;
-let currentNumber;
+let memoryStr;
 let currentOperator;
-let memory;
+let currentNumStr;
 
 initPageElems();

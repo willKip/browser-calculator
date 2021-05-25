@@ -20,24 +20,12 @@ body {
 
 #calc-body {
     background-color: var(--calculator-color);
-    width: 400px;
-    min-height: 550px;
+    width: 380px;
+    min-height: 500px;
     display: flex;
     padding: 4px;
     box-sizing: border-box; /*Prevents padding resizing parent*/
     flex-direction: column;
-    justify-content: flex-end;
-}
-
-#calc-display-previous {
-    margin: 5px 5px 0 5px;
-    color: var(--text-color-dim);
-    font-size: 30px;
-    display: flex;
-    text-align: right;
-    word-wrap: break-word;
-    word-break: break-all;
-    align-items: flex-end;
     justify-content: flex-end;
 }
 
