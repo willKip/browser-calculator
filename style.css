@@ -49,6 +49,7 @@ body {
     word-break: break-all;
     align-items: flex-end;
     justify-content: flex-end;
+    margin-bottom: 10px;
 }
 
 .button {
@@ -77,6 +78,13 @@ body {
 }
 #delete-button:hover {background-color: hsl(var(--delete-button-hue), 58%, 30%);}
 #delete-button:active {background-color: hsl(var(--delete-button-hue), 58%, 40%);}
+
+#equals-button {
+    --equals-button-hue: 220;
+    background-color: hsl(var(--equals-button-hue), 58%, 20%);
+}
+#equals-button:hover {background-color: hsl(var(--equals-button-hue), 58%, 30%);}
+#equals-button:active {background-color: hsl(var(--equals-button-hue), 58%, 40%);}
 
 .button-operator {
     --operator-button-light: 7%;
