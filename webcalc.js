@@ -12,31 +12,45 @@ function operate(a, b, op) {
 
 function initPageElems() {
     Array.from(document.getElementsByClassName("button-number")).
-    forEach(function(element) {
-        element.addEventListener("click", putDigit);
-    });
+    forEach(function(element) {element.addEventListener("click",
+        () => putDigit(element.textContent));});
 
     Array.from(document.getElementsByClassName("button-operator")).
-    forEach(function(element) {
-        element.addEventListener("click", putOperator);
-    });
+    forEach(function(element) {element.addEventListener("click",
+        () => putOperator(element.textContent));});
 
     document.getElementById("clear-button").
     addEventListener("click", resetCalc);
-    document.getElementById("equals-button").
-    addEventListener("click", equals);
+    document.getElementById("delete-button").
+    addEventListener("click", deleteDigit);
     document.getElementById("sign-change-button").
     addEventListener("click", changeSign);
     document.getElementById("point-button").
     addEventListener("click", putPoint);
-    document.getElementById("delete-button").
-    addEventListener("click", deleteOne);
+    document.getElementById("equals-button").
+    addEventListener("click", equals);
+
+    document.addEventListener("keydown", parseKey);
 
     resetCalcValues();
     updateCurDisplay(currentNumStr);
 }
 
-function deleteOne() {
+function parseKey(e) {
+    if (e.key >= 0 && e.key <= 9) putDigit(e.key);
+    else if (e.key === "+" ||e.key === "-" ||e.key === "*" ||e.key === "/")
+        putOperator(e.key);
+    else switch (e.key) {
+            case "Escape": resetCalc(); break;
+            case "Backspace": deleteDigit(); break;
+            case "+/-": changeSign(); break;
+            case ".": putPoint(); break;
+            case "=": equals(); break;
+            case "Enter": equals(); break;
+        }
+}
+
+function deleteDigit() {
     currentNumStr = currentNumStr.slice(0, -1);
     if (currentNumStr.length === 0) currentNumStr = "0";
     updateCurDisplay(currentNumStr);
@@ -47,8 +61,7 @@ function changeSign() {
     updateCurDisplay(currentNumStr);
 }
 
-function putDigit() {
-    let digit = this.textContent;
+function putDigit(digit) {
     if (currentNumStr === "0")
         currentNumStr = digit;
     else
@@ -64,9 +77,9 @@ function putPoint() {
     }
 }
 
-function putOperator() {
+function putOperator(op) {
     equals();   // Calc what was previously there first, if possible
-    currentOperator = this.textContent;
+    currentOperator = op;
 }
 
 function equals() {

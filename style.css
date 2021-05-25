@@ -1,7 +1,7 @@
 :root {
-    --button-color: black;
-    --button-hover-color: #343434;
-    --button-clicked-color: #494949;
+    --button-color: hsl(0, 0%, 0%);
+    --button-hover-color: hsl(0, 0%, 20%);
+    --button-clicked-color: hsl(0, 0%, 29%);
     --text-color: white;
     --text-color-dim: hsl(0, 0%, 80%);
     --calculator-color: #292929;
