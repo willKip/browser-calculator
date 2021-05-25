@@ -37,7 +37,9 @@ function initPageElems() {
 }
 
 function parseKey(e) {
-    if (e.key >= 0 && e.key <= 9) putDigit(e.key);
+    if (e.key >= 0 && e.key <= 9) {
+        putDigit(e.key);
+    }
     else if (e.key === "+" ||e.key === "-" ||e.key === "*" ||e.key === "/")
         putOperator(e.key);
     else switch (e.key) {
@@ -71,7 +73,7 @@ function putDigit(digit) {
 
 function putPoint() {
     // Only allow one decimal point to exist!
-    if (Number.isInteger(Number(currentNumStr))){
+    if (!currentNumStr.includes(".")){
         currentNumStr += ".";
         updateCurDisplay(currentNumStr);
     }
