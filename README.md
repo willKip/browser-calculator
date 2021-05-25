@@ -7,3 +7,6 @@ Backspace deletes a digit.
 Division by zero will display an error and reset calculator values.
 
 https://willkip.github.io/web-calculator/
+
+### Example Screenshots
+![example image 1](calc1.png?raw=true "Calculator with 11 displaying on the screen.")
