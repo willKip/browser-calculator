@@ -36,20 +36,33 @@ function initPageElems() {
     updateCurDisplay(currentNumStr);
 }
 
+function buttonActiveEffect(id) {
+    let button = document.getElementById(id);
+    button.classList.add("active");
+    setTimeout(function() {button.classList.remove("active");},
+        100);
+}
+
 function parseKey(e) {
     if (e.key >= 0 && e.key <= 9) {
         putDigit(e.key);
-    }
-    else if (e.key === "+" ||e.key === "-" ||e.key === "*" ||e.key === "/")
+        buttonActiveEffect(`button-${e.key}`);
+    } else if (e.key === "+" ||e.key === "-" ||e.key === "*" ||e.key === "/") {
         putOperator(e.key);
-    else switch (e.key) {
-            case "Escape": resetCalc(); break;
-            case "Backspace": deleteDigit(); break;
-            case "+/-": changeSign(); break;
-            case ".": putPoint(); break;
-            case "=": equals(); break;
-            case "Enter": equals(); break;
-        }
+        buttonActiveEffect(`button-${e.key}`);
+    } else if (e.key === "Escape") {
+        resetCalc();
+        buttonActiveEffect("clear-button")
+    } else if (e.key === "Backspace" || e.key === "Delete") {
+        deleteDigit();
+        buttonActiveEffect("delete-button");
+    } else if (e.key === ".") {
+        putPoint();
+        buttonActiveEffect("point-button");
+    } else if (e.key === "=" || e.key === "Enter") {
+        equals();
+        buttonActiveEffect("equals-button");
+    }
 }
 
 function deleteDigit() {

@@ -1,12 +1,8 @@
 :root {
-    --button-color: hsl(0, 0%, 0%);
-    --button-hover-color: hsl(0, 0%, 20%);
-    --button-clicked-color: hsl(0, 0%, 29%);
     --text-color: white;
     --text-color-dim: hsl(0, 0%, 80%);
-    --calculator-color: #292929;
+    --calculator-color: hsl(0, 0%, 16%);
     --calculator-font: "Segoe UI";
-
     color: var(--text-color);
     font-family: var(--calculator-font), "serif";
 }
@@ -20,11 +16,11 @@ body {
 
 #calc-body {
     background-color: var(--calculator-color);
-    width: 380px;
+    width: 370px;
     min-height: 500px;
     display: flex;
     padding: 4px;
-    box-sizing: border-box; /*Prevents padding resizing parent*/
+    box-sizing: border-box; /*Prevents padding from resizing parent*/
     flex-direction: column;
     justify-content: flex-end;
 }
@@ -43,40 +39,37 @@ body {
 .button {
     user-select: none;
     cursor: pointer;
-    background-color: var(--button-color);
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    --button-brightness: 0%;
+    background-color: hsl(0, 0%, var(--button-brightness));
 }
-.button:hover {background-color: var(--button-hover-color);}
-.button:active {background-color: var(--button-clicked-color);}
+.button:hover {
+    --button-brightness: 10%;
+}
+.button:active, .button.active {
+    /*Bug: brightness filter applied by appending active class only applies to text*/
+    --button-brightness: 20%;
+}
 
 #clear-button {
     grid-column: 1/3;
-    --clear-button-hue: 2;
-    background-color: hsl(var(--clear-button-hue), 58%, 20%);
+    background-color: hsl(2, 58%, calc(var(--button-brightness) + 20%));
 }
-#clear-button:hover {background-color: hsl(var(--clear-button-hue), 58%, 30%);}
-#clear-button:active {background-color: hsl(var(--clear-button-hue), 58%, 40%);}
 
 #delete-button {
-    --delete-button-hue: 240;
-    background-color: hsl(var(--delete-button-hue), 58%, 20%);
+    background-color: hsl(240, 58%, calc(var(--button-brightness) + 20%));
 }
-#delete-button:hover {background-color: hsl(var(--delete-button-hue), 58%, 30%);}
-#delete-button:active {background-color: hsl(var(--delete-button-hue), 58%, 40%);}
 
 #equals-button {
-    --equals-button-hue: 220;
-    background-color: hsl(var(--equals-button-hue), 58%, 20%);
+    background-color: hsl(220, 58%, calc(var(--button-brightness) + 20%));
 }
-#equals-button:hover {background-color: hsl(var(--equals-button-hue), 58%, 30%);}
-#equals-button:active {background-color: hsl(var(--equals-button-hue), 58%, 40%);}
 
 .button-operator {
-    --operator-button-light: 7%;
-    background-color: hsl(0, 0%, var(--operator-button-light));
+    background-color: hsl(0, 0%, calc(var(--button-brightness) + 7%));
 }
 
 #calc-panel {
