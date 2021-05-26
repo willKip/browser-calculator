@@ -43,13 +43,21 @@ function buttonActiveEffect(id) {
         100);
 }
 
+function convertOp(op) {
+    switch (op) {
+        case "×": return "*";
+        case "÷": return "/";
+        default: return op; // Do not change plus (+) or minus (-)
+    }
+}
+
 function parseKey(e) {
     if (e.key >= 0 && e.key <= 9) {
         putDigit(e.key);
         buttonActiveEffect(`button-${e.key}`);
     } else if (e.key === "+" ||e.key === "-" ||e.key === "*" ||e.key === "/") {
-        putOperator(e.key);
-        buttonActiveEffect(`button-${e.key}`);
+        putOperator(convertOp(e.key));
+        buttonActiveEffect(`button-${convertOp(e.key)}`);
     } else if (e.key === "Escape") {
         resetCalc();
         buttonActiveEffect("clear-button")
