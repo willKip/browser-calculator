@@ -1,5 +1,8 @@
 # Online Calculator
-Simple calculator built on JavaScript, HTML, and CSS.
+
+(This project is part of [The Odin Project](https://github.com/TheOdinProject/curriculum), an open-source self-directed web development course.)
+
+Simple in-browser calculator built on JavaScript, HTML, and CSS.
 
 Mouse input works as well as keyboard input. Escape resets the calculator,
 Backspace deletes a digit. Sign change has no corresponding key.
