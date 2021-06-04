@@ -33,7 +33,9 @@ function initPageElems() {
 function buttonActiveEffect(id) {
   let button = document.getElementById(id);
   button.classList.add("active");
-  setTimeout(function () { button.classList.remove("active");},
+  setTimeout(function () {
+      button.classList.remove("active");
+    },
     100);
 }
 
