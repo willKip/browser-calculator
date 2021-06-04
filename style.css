@@ -47,9 +47,11 @@ body {
     --button-brightness: 0%;
     background-color: hsl(0, 0%, var(--button-brightness));
 }
+
 .button:hover {
     --button-brightness: 10%;
 }
+
 .button:active, .button.active {
     /*Bug: brightness filter applied by appending active class only applies to text*/
     --button-brightness: 20%;
