@@ -143,9 +143,14 @@ function putPoint() {
 }
 
 function equals() {
-  memoryStr = operate(Number(memoryStr), Number(currentNumStr), convertOp(currentOperator)).toString();
-  currentNumStr = null;
-  currentOperator = null;
+  if (convertOp(currentOperator) === "/" && (currentNumStr === "0" || currentNumStr === null)) {
+    alert("Division by zero attempted! Clearing calculator.");
+    resetCalc();
+  } else {
+    memoryStr = operate(Number(memoryStr), Number(currentNumStr), convertOp(currentOperator)).toString();
+    currentNumStr = null;
+    currentOperator = null;
+  }
 }
 
 // Does not apply changes to display by itself! Use updateDisplays()!
