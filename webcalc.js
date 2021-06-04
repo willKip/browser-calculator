@@ -20,35 +20,88 @@ function operate(a, b, op) {
 }
 
 function initPageElems() {
-  Array.from(document.getElementsByClassName("button-number")).forEach(function (element) {
-    element.addEventListener("click",
-      () => putDigit(element.textContent));
+  Array.from(document.getElementsByClassName("button")).forEach(function (element) {
+    element.addEventListener("click", () => enterInput(element.textContent));
   });
-
-  Array.from(document.getElementsByClassName("button-operator")).forEach(function (element) {
-    element.addEventListener("click",
-      () => putOperator(element.textContent));
-  });
-
-  document.getElementById("clear-button").addEventListener("click", resetCalc);
-  document.getElementById("delete-button").addEventListener("click", deleteDigit);
-  document.getElementById("sign-change-button").addEventListener("click", changeSign);
-  document.getElementById("point-button").addEventListener("click", putPoint);
-  document.getElementById("equals-button").addEventListener("click", equals);
 
   document.addEventListener("keydown", parseKey);
 
   resetCalcValues();
-  updateCurDisplay(currentNumStr);
+  updateDisplays();
 }
 
 function buttonActiveEffect(id) {
   let button = document.getElementById(id);
   button.classList.add("active");
-  setTimeout(function () {
-      button.classList.remove("active");
-    },
+  setTimeout(function () { button.classList.remove("active");},
     100);
+}
+
+function parseKey(e) {
+  enterInput(e.key);
+
+  if (e.key >= 0 && e.key <= 9) {
+    buttonActiveEffect(`button-${e.key}`);
+  } else if (isOperator(e.key)) {
+    buttonActiveEffect(`button-${convertOp(e.key)}`);
+  } else if (e.key === "Escape") {
+    buttonActiveEffect("clear-button")
+  } else if (e.key === "Backspace" || e.key === "Delete") {
+    buttonActiveEffect("delete-button");
+  } else if (e.key === ".") {
+    buttonActiveEffect("point-button");
+  } else if (e.key === "=" || e.key === "Enter") {
+    buttonActiveEffect("equals-button");
+  }
+}
+
+function enterInput(input) {
+  if (input === "Escape" || input === "AC") {
+    resetCalc();
+  } else if (input === "Backspace" || input === "Delete" || input === "DEL") {
+    deleteDigit();
+  } else if (input === ".") {
+    if (currentNumStr === null && currentOperator === null) {
+      currentNumStr = memoryStr;
+      memoryStr = null;
+    }
+    putPoint();
+  } else if (input === "+/-") {
+    if (currentNumStr === null && currentOperator === null) {
+      currentNumStr = memoryStr;
+      memoryStr = null;
+    }
+    changeSign();
+  } else if (memoryStr === null) {
+    if (currentNumStr === null) {
+      if (input >= 0 && input <= 9) {
+        putDigit(input);
+      }
+    } else if (currentOperator === null) {
+      if (isOperator(input)) {
+        currentOperator = input;
+        memoryStr = currentNumStr;
+        currentNumStr = null;
+      } else if (input >= 0 && input <= 9) {
+        putDigit(input);
+      }
+    }
+  } else {
+    if (isOperator(input)) {
+      if (currentNumStr !== null)
+        equals();
+      currentOperator = input;
+    } else if (input >= 0 && input <= 9) {
+      if (currentOperator === null) {
+        currentNumStr = memoryStr;
+        memoryStr = null;
+      }
+      putDigit(input);
+    } else if (input === "=" || input === "Enter") {
+      equals();
+    }
+  }
+  updateDisplays();
 }
 
 function convertOp(op) {
@@ -62,96 +115,62 @@ function convertOp(op) {
   }
 }
 
-function parseKey(e) {
-  if (e.key >= 0 && e.key <= 9) {
-    putDigit(e.key);
-    buttonActiveEffect(`button-${e.key}`);
-  } else if (e.key === "+" || e.key === "-" || e.key === "*" || e.key === "/") {
-    putOperator(convertOp(e.key));
-    buttonActiveEffect(`button-${convertOp(e.key)}`);
-  } else if (e.key === "Escape") {
-    resetCalc();
-    buttonActiveEffect("clear-button")
-  } else if (e.key === "Backspace" || e.key === "Delete") {
-    deleteDigit();
-    buttonActiveEffect("delete-button");
-  } else if (e.key === ".") {
-    putPoint();
-    buttonActiveEffect("point-button");
-  } else if (e.key === "=" || e.key === "Enter") {
-    equals();
-    buttonActiveEffect("equals-button");
-  }
+function isOperator(i) {
+  i = convertOp(i);
+  return (i === "+" || i === "-" || i === "*" || i === "/");
 }
 
 function deleteDigit() {
-  currentNumStr = currentNumStr.slice(0, -1);
-  if (currentNumStr.length === 0) currentNumStr = "0";
-  updateCurDisplay(currentNumStr);
+  if (currentNumStr != null) currentNumStr = currentNumStr.slice(0, -1);
 }
 
 function changeSign() {
   currentNumStr = (Number(currentNumStr) * -1).toString();
-  updateCurDisplay(currentNumStr);
 }
 
 function putDigit(digit) {
-  if (currentNumStr === "0")
+  if (currentNumStr === null)
     currentNumStr = digit;
   else
-    currentNumStr += digit; // concatenate to currentNumStr string
-  updateCurDisplay(currentNumStr);
+    currentNumStr += digit; // String concatenation
 }
 
 function putPoint() {
-  // Only allow one decimal point to exist!
-  if (!currentNumStr.includes(".")) {
+  // Only allow one decimal point to exist in a numStr!
+  if (currentNumStr !== null && !currentNumStr.includes(".")) {
     currentNumStr += ".";
-    updateCurDisplay(currentNumStr);
   }
-}
-
-function putOperator(op) {
-  equals();   // Calc what was previously there first, if possible
-  currentOperator = op;
 }
 
 function equals() {
-  if (memoryStr === null) {
-    // Loading current number to memory as first term
-    memoryStr = currentNumStr;
-    currentNumStr = "0";
-    updateCurDisplay(currentNumStr);
-  } else if (currentOperator !== null) {
-    if (currentNumStr !== "0" || currentOperator !== "/") {
-      // Calculating with second term
-      memoryStr = operate(Number(memoryStr), Number(currentNumStr), currentOperator).toString();
-      currentNumStr = "0";
-      updateCurDisplay(memoryStr);
-    } else {
-      updateCurDisplay("division by 0");
-      resetCalcValues();
-    }
-  }
+  memoryStr = operate(Number(memoryStr), Number(currentNumStr), convertOp(currentOperator)).toString();
+  currentNumStr = null;
+  currentOperator = null;
 }
 
-// Does not apply changes to display by itself!
+// Does not apply changes to display by itself! Use updateDisplays()!
 function resetCalcValues() {
   memoryStr = null;
   currentOperator = null;
-  currentNumStr = "0";
+  currentNumStr = null;
 }
 
 function resetCalc() {
   resetCalcValues();
-  updateCurDisplay(currentNumStr);
+  updateDisplays();
 }
 
-function updateCurDisplay(content) {
-  curDisplayDiv.textContent = content;
+function updateDisplays() {
+  let prevText = "";
+  if (memoryStr !== null) prevText += memoryStr;
+  if (currentOperator !== null) prevText += " " + currentOperator;
+
+  prevDisplayDiv.textContent = prevText;
+  curDisplayDiv.textContent = currentNumStr;
 }
 
 const fractionDigitsValue = 6;
+const prevDisplayDiv = document.getElementById("calc-display-previous");
 const curDisplayDiv = document.getElementById("calc-display-current");
 
 let memoryStr;
